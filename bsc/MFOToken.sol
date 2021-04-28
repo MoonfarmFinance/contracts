@@ -650,6 +650,7 @@ abstract contract Ownable is Context {
 
 
 contract MFOToken is ERC20("Moonfarm Finance", "MFO"), Ownable {
+    uint256 private _initial_supply = 50000000e18;
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
     }
@@ -657,5 +658,8 @@ contract MFOToken is ERC20("Moonfarm Finance", "MFO"), Ownable {
     function burn(uint256 amount) public virtual returns (bool) {
         _burn(_msgSender(), amount);
         return true;
+    }
+    constructor() public {
+        _mint(msg.sender, _initial_supply); 
     }
 }
