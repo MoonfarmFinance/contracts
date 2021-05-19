@@ -569,7 +569,7 @@ contract ERC20 is Context, IERC20 {
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual { }
 }
 
-// File: contracts/contracts/MFOToken.sol
+// File: contracts/contracts/MFO.sol
 
 pragma solidity ^0.6.0;
 
