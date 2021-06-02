@@ -6,8 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./IRewardDistributionRecipient.sol";
 import "./LPTokenWrapper.sol";
 
-contract RewardPool is LPTokenWrapper, IRewardDistributionRecipient {
-    IERC20 public yfi = IERC20(0x0000000000000000000000000000000000000000);
+contract RewardPool is LPTokenWrapper(0x0000000000000000000000000000000000000000), IRewardDistributionRecipient {
+    IERC20 public tmfo = IERC20(0x0000000000000000000000000000000000000000);
+    
     uint256 public constant DURATION = 60 days;
 
     uint256 public periodFinish = 0;
@@ -21,6 +22,14 @@ contract RewardPool is LPTokenWrapper, IRewardDistributionRecipient {
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
+    
+    function setTmfo(IERC20 _tmfo) public onlyOwner {
+        tmfo = _tmfo; 
+    }
+    
+    function getTmfo() public view returns (IERC20){
+        return tmfo;
+    }
 
     modifier updateReward(address account) {
         rewardPerTokenStored = rewardPerToken();
@@ -81,7 +90,7 @@ contract RewardPool is LPTokenWrapper, IRewardDistributionRecipient {
         uint256 reward = earned(msg.sender);
         if (reward > 0) {
             rewards[msg.sender] = 0;
-            yfi.safeTransfer(msg.sender, reward);
+            tmfo.safeTransfer(msg.sender, reward);
             emit RewardPaid(msg.sender, reward);
         }
     }
@@ -95,7 +104,7 @@ contract RewardPool is LPTokenWrapper, IRewardDistributionRecipient {
             rewardRate = reward.div(DURATION);
         } else {
             uint256 remaining = periodFinish.sub(block.timestamp);
-            uint256 leftover = remaining.mul(rewardRate);
+            uint256 leftover = tmfo.balanceOf(address(this));
             rewardRate = reward.add(leftover).div(DURATION);
         }
         lastUpdateTime = block.timestamp;
