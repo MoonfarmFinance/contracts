@@ -3,12 +3,26 @@ pragma solidity ^0.5.0;
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/ownership/Ownable.sol";
 
-contract LPTokenWrapper {
+contract LPTokenWrapper is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-
-    IERC20 public y = IERC20(0x0000000000000000000000000000000000000000);
+    
+    IERC20 public tlp;
+    
+    
+    constructor(IERC20 _tlp) public {
+        tlp = _tlp;  
+    }
+    
+    function setTlp(IERC20 _tlp) public onlyOwner {
+        tlp = _tlp; 
+    }
+    
+    function getTlp() public view returns (IERC20){
+        return tlp;
+    }
 
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
