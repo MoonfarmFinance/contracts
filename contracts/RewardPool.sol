@@ -103,7 +103,6 @@ contract RewardPool is LPTokenWrapper(0x0000000000000000000000000000000000000000
         if (block.timestamp >= periodFinish) {
             rewardRate = reward.div(DURATION);
         } else {
-            uint256 remaining = periodFinish.sub(block.timestamp);
             uint256 leftover = tmfo.balanceOf(address(this));
             rewardRate = reward.add(leftover).div(DURATION);
         }
